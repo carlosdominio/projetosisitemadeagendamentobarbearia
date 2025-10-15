@@ -1,14 +1,69 @@
-// JavaScript básico para funcionalidades
+// Sistema de autenticação e funcionalidades
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthentication();
 
-document.getElementById('scheduleBtn').addEventListener('click', () => {
-    document.getElementById('home').classList.add('hidden');
-    document.getElementById('schedule').classList.remove('hidden');
+    // Logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
 });
 
-document.getElementById('scheduleForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    // Simular agendamento
-    alert('Agendamento realizado com sucesso! Redirecionando para pagamento...');
-    // Redirecionar para pagamento
-    window.location.href = 'payment.html';
-});
+function checkAuthentication() {
+    // Verificar se usuário está logado (simulado com localStorage)
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user) {
+        // Usuário não autenticado - redirecionar para login
+        window.location.href = 'auth.html';
+        return;
+    }
+
+    // Usuário autenticado - mostrar interface
+    document.getElementById('authCheck').classList.add('hidden');
+    document.getElementById('authenticatedContent').classList.remove('hidden');
+
+    // Exibir nome do usuário
+    document.getElementById('userInfo').textContent = `Olá, ${user.name}`;
+
+    // Configurar eventos da interface
+    setupInterface();
+}
+
+function setupInterface() {
+    // Botão agendar
+    document.getElementById('scheduleBtn').addEventListener('click', () => {
+        document.getElementById('home').classList.add('hidden');
+        document.getElementById('schedule').classList.remove('hidden');
+    });
+
+    // Formulário de agendamento
+    document.getElementById('scheduleForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const date = document.getElementById('date').value;
+        const time = document.getElementById('time').value;
+        const service = document.getElementById('service').value;
+
+        if (!date || !time || !service) {
+            alert('Por favor, preencha todos os campos.');
+            return;
+        }
+
+        // Simular agendamento
+        alert('Agendamento realizado com sucesso! Redirecionando para pagamento...');
+
+        // Salvar agendamento temporariamente
+        const appointment = { date, time, service };
+        localStorage.setItem('currentAppointment', JSON.stringify(appointment));
+
+        // Redirecionar para pagamento
+        window.location.href = 'payment.html';
+    });
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('currentAppointment');
+    window.location.href = 'auth.html';
+}

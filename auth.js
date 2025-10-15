@@ -13,14 +13,39 @@ document.getElementById('switchToLogin').addEventListener('click', () => {
 
 document.getElementById('emailLoginForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    // Simular login
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    // Simular login - em produção seria uma chamada para API
+    const user = { id: 1, name: 'João Silva', email: email };
+    localStorage.setItem('user', JSON.stringify(user));
+
     alert('Login realizado com sucesso!');
     window.location.href = 'index.html';
 });
 
 document.getElementById('emailRegisterForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    // Simular cadastro
+
+    const email = document.getElementById('regEmail').value;
+    const phone = document.getElementById('regPhone').value;
+    const password = document.getElementById('regPassword').value;
+
+    if (!email || !phone || !password) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    // Simular cadastro - em produção seria uma chamada para API
+    const user = { id: Date.now(), name: email.split('@')[0], email: email, phone: phone };
+    localStorage.setItem('user', JSON.stringify(user));
+
     alert('Cadastro realizado com sucesso!');
     window.location.href = 'index.html';
 });
