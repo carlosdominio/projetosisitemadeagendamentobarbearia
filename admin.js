@@ -1,54 +1,124 @@
-// Painel administrativo básico (dados simulados)
+// Painel administrativo dinâmico
 document.addEventListener('DOMContentLoaded', () => {
-    // Dados simulados
-    const clientes = [
-        { nome: 'João Silva', email: 'joao@email.com', telefone: '11999999999', cortesMes: 2 },
-        { nome: 'Maria Santos', email: 'maria@email.com', telefone: '11888888888', cortesMes: 1 }
-    ];
+    loadAdminData();
 
-    const agendamentos = [
-        { cliente: 'João Silva', dataHora: '2023-10-15 14:00', servico: 'Corte Básico', status: 'Confirmado' },
-        { cliente: 'Maria Santos', dataHora: '2023-10-16 10:00', servico: 'Corte Completo', status: 'Pendente' }
-    ];
+    // Atualizar dados a cada 30 segundos
+    setInterval(loadAdminData, 30000);
+});
 
-    const pagamentos = [
-        { cliente: 'João Silva', valor: 'R$ 20', metodo: 'PIX', data: '2023-10-10' },
-        { cliente: 'Maria Santos', valor: 'R$ 30', metodo: 'Cartão', data: '2023-10-12' }
-    ];
+function loadAdminData() {
+    // Carregar dados reais do localStorage
+    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const adminAppointments = JSON.parse(localStorage.getItem('adminAppointments') || '[]');
+    const adminPayments = JSON.parse(localStorage.getItem('adminPayments') || '[]');
+
+    // Calcular estatísticas
+    const today = new Date().toISOString().split('T')[0];
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
+
+    const agendamentosHoje = adminAppointments.filter(a => a.date === today).length;
+    const lucroHoje = adminPayments
+        .filter(p => p.date === today)
+        .reduce((total, p) => total + parseFloat(p.value.replace('R$ ', '')), 0);
+
+    const lucroMes = adminPayments
+        .filter(p => {
+            const paymentDate = new Date(p.date);
+            return paymentDate.getMonth() === thisMonth && paymentDate.getFullYear() === thisYear;
+        })
+        .reduce((total, p) => total + parseFloat(p.value.replace('R$ ', '')), 0);
 
     // Preencher estatísticas
-    document.getElementById('totalClientes').textContent = clientes.length;
-    document.getElementById('agendamentosHoje').textContent = agendamentos.filter(a => a.dataHora.startsWith(new Date().toISOString().split('T')[0])).length;
-    document.getElementById('lucroHoje').textContent = 'R$ 50'; // Simulado
-    document.getElementById('lucroMes').textContent = 'R$ 500'; // Simulado
+    document.getElementById('totalClientes').textContent = registeredUsers.length;
+    document.getElementById('agendamentosHoje').textContent = agendamentosHoje;
+    document.getElementById('lucroHoje').textContent = `R$ ${lucroHoje.toFixed(2)}`;
+    document.getElementById('lucroMes').textContent = `R$ ${lucroMes.toFixed(2)}`;
 
-    // Preencher tabelas
+    // Limpar e preencher tabela de clientes
     const clientesTable = document.getElementById('clientesTable');
-    clientes.forEach(cliente => {
+    clientesTable.innerHTML = '';
+
+    registeredUsers.forEach(cliente => {
         const row = clientesTable.insertRow();
-        row.insertCell(0).textContent = cliente.nome;
+        row.insertCell(0).textContent = cliente.name;
         row.insertCell(1).textContent = cliente.email;
-        row.insertCell(2).textContent = cliente.telefone;
-        row.insertCell(3).textContent = cliente.cortesMes;
+        row.insertCell(2).textContent = cliente.phone || 'N/A';
+
+        // Contar cortes no mês atual
+        const cortesMes = adminAppointments.filter(a =>
+            a.client === cliente.name &&
+            new Date(a.date).getMonth() === thisMonth &&
+            new Date(a.date).getFullYear() === thisYear
+        ).length;
+        row.insertCell(3).textContent = cortesMes;
     });
 
+    // Limpar e preencher tabela de agendamentos
     const agendamentosTable = document.getElementById('agendamentosTable');
-    agendamentos.forEach(agendamento => {
+    agendamentosTable.innerHTML = '';
+
+    adminAppointments.forEach((agendamento, index) => {
         const row = agendamentosTable.insertRow();
-        row.insertCell(0).textContent = agendamento.cliente;
-        row.insertCell(1).textContent = agendamento.dataHora;
-        row.insertCell(2).textContent = agendamento.servico;
+        row.insertCell(0).textContent = agendamento.client;
+        row.insertCell(1).textContent = `${agendamento.date} ${agendamento.time}`;
+        row.insertCell(2).textContent = agendamento.service === 'corte_basico' ? 'Corte Básico' : 'Corte Completo';
         row.insertCell(3).textContent = agendamento.status;
+
         const actionsCell = row.insertCell(4);
-        actionsCell.innerHTML = '<button class="bg-green-500 text-white px-2 py-1 rounded text-sm">Confirmar</button> <button class="bg-red-500 text-white px-2 py-1 rounded text-sm">Cancelar</button>';
+        if (agendamento.status === 'Pendente') {
+            actionsCell.innerHTML = `
+                <button onclick="confirmAppointment(${index})" class="bg-green-500 text-white px-2 py-1 rounded text-sm mr-1">Confirmar</button>
+                <button onclick="cancelAppointment(${index})" class="bg-red-500 text-white px-2 py-1 rounded text-sm">Cancelar</button>
+            `;
+        } else {
+            actionsCell.innerHTML = '<span class="text-gray-500">Finalizado</span>';
+        }
     });
 
+    // Limpar e preencher tabela de pagamentos
     const pagamentosTable = document.getElementById('pagamentosTable');
-    pagamentos.forEach(pagamento => {
+    pagamentosTable.innerHTML = '';
+
+    adminPayments.forEach(pagamento => {
         const row = pagamentosTable.insertRow();
-        row.insertCell(0).textContent = pagamento.cliente;
-        row.insertCell(1).textContent = pagamento.valor;
-        row.insertCell(2).textContent = pagamento.metodo;
-        row.insertCell(3).textContent = pagamento.data;
+        row.insertCell(0).textContent = pagamento.client;
+        row.insertCell(1).textContent = pagamento.value;
+        row.insertCell(2).textContent = pagamento.method;
+        row.insertCell(3).textContent = pagamento.date;
     });
-});
+}
+
+function confirmAppointment(index) {
+    const adminAppointments = JSON.parse(localStorage.getItem('adminAppointments') || '[]');
+    if (adminAppointments[index]) {
+        adminAppointments[index].status = 'Confirmado';
+
+        // Registrar pagamento
+        const appointment = adminAppointments[index];
+        const payment = {
+            client: appointment.client,
+            value: appointment.value,
+            method: 'PIX', // Simulado
+            date: new Date().toISOString().split('T')[0]
+        };
+
+        const adminPayments = JSON.parse(localStorage.getItem('adminPayments') || '[]');
+        adminPayments.push(payment);
+        localStorage.setItem('adminPayments', JSON.stringify(adminPayments));
+
+        localStorage.setItem('adminAppointments', JSON.stringify(adminAppointments));
+        loadAdminData(); // Recarregar dados
+        alert('Agendamento confirmado com sucesso!');
+    }
+}
+
+function cancelAppointment(index) {
+    const adminAppointments = JSON.parse(localStorage.getItem('adminAppointments') || '[]');
+    if (adminAppointments[index]) {
+        adminAppointments[index].status = 'Cancelado';
+        localStorage.setItem('adminAppointments', JSON.stringify(adminAppointments));
+        loadAdminData(); // Recarregar dados
+        alert('Agendamento cancelado!');
+    }
+}

@@ -53,8 +53,24 @@ function setupInterface() {
         // Simular agendamento
         alert('Agendamento realizado com sucesso! Redirecionando para pagamento...');
 
-        // Salvar agendamento temporariamente
-        const appointment = { date, time, service };
+        // Salvar agendamento na "base de dados" administrativa
+        const user = JSON.parse(localStorage.getItem('user'));
+        const appointment = {
+            id: Date.now(),
+            client: user.name,
+            date: date,
+            time: time,
+            service: service,
+            status: 'Pendente',
+            value: service === 'corte_basico' ? 'R$ 20' : 'R$ 30'
+        };
+
+        // Salvar na lista de agendamentos administrativos
+        const adminAppointments = JSON.parse(localStorage.getItem('adminAppointments') || '[]');
+        adminAppointments.push(appointment);
+        localStorage.setItem('adminAppointments', JSON.stringify(adminAppointments));
+
+        // Salvar agendamento temporariamente para pagamento
         localStorage.setItem('currentAppointment', JSON.stringify(appointment));
 
         // Redirecionar para pagamento
