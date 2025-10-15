@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 
 // Servir arquivos estáticos primeiro (antes das rotas dinâmicas)
@@ -11,7 +12,16 @@ app.get('/api/health', (req, res) => {
 });
 
 // Rota catch-all para SPA (deve ser a última)
+// Verifica se o arquivo existe fisicamente antes de servir index.html
 app.get('*', (req, res) => {
+    const filePath = path.join(__dirname, req.path);
+
+    // Se o arquivo existe, serve normalmente (caso o static não tenha pegado)
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        return res.sendFile(filePath);
+    }
+
+    // Caso contrário, serve o index.html para SPA routing
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
