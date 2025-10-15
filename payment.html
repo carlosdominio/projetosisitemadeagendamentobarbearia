@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Barbearia</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Pagamento</h2>
+        <div class="mb-4">
+            <p class="text-lg">Serviço: <span id="serviceName">Corte Básico</span></p>
+            <p class="text-lg">Valor: <span id="servicePrice">R$ 20</span></p>
+        </div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold mb-2">Escolha a forma de pagamento:</h3>
+            <div class="space-y-2">
+                <label class="flex items-center">
+                    <input type="radio" name="paymentMethod" value="pix" class="mr-2">
+                    <span>PIX</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="paymentMethod" value="card" class="mr-2">
+                    <span>Cartão de Crédito</span>
+                </label>
+            </div>
+        </div>
+        <div id="pixSection" class="hidden mb-4">
+            <p class="mb-2">QR Code PIX:</p>
+            <div class="bg-gray-200 p-4 rounded text-center">
+                <!-- Placeholder para QR Code -->
+                <p>QR Code seria gerado aqui</p>
+            </div>
+        </div>
+        <div id="cardSection" class="hidden mb-4">
+            <div class="mb-4">
+                <label for="cardNumber" class="block text-sm font-medium">Número do Cartão:</label>
+                <input type="text" id="cardNumber" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="mb-4">
+                <label for="cardExpiry" class="block text-sm font-medium">Validade:</label>
+                <input type="text" id="cardExpiry" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="MM/AA">
+            </div>
+            <div class="mb-4">
+                <label for="cardCVV" class="block text-sm font-medium">CVV:</label>
+                <input type="text" id="cardCVV" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="123">
+            </div>
+        </div>
+        <button id="payBtn" class="w-full bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50" disabled>Pagar</button>
+        <button onclick="window.location.href='index.html'" class="w-full bg-gray-500 text-white py-2 px-4 rounded mt-2">Voltar</button>
+    </div>
+    <script src="payment.js"></script>
+</body>
+</html>

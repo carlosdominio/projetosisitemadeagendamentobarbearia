@@ -12,8 +12,8 @@
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold">Barbearia Agendamento</h1>
             <nav>
-                <button id="loginBtn" class="bg-white text-blue-600 px-4 py-2 rounded">Login</button>
-                <button id="registerBtn" class="bg-white text-blue-600 px-4 py-2 rounded ml-2">Cadastrar</button>
+                <button id="loginBtn" class="bg-white text-blue-600 px-4 py-2 rounded" onclick="window.location.href='auth.html'">Login</button>
+                <button id="registerBtn" class="bg-white text-blue-600 px-4 py-2 rounded ml-2" onclick="window.location.href='auth.html'">Cadastrar</button>
             </nav>
         </div>
     </header>
@@ -54,7 +54,7 @@
 
         <section id="admin" class="hidden">
             <h3 class="text-2xl font-bold mb-4">Painel Administrativo</h3>
-            <!-- Conteúdo do painel admin -->
+            <button onclick="window.location.href='admin.html'" class="bg-blue-600 text-white px-4 py-2 rounded">Acessar Painel</button>
         </section>
     </main>
 

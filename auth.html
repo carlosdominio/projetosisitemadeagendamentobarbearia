@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Cadastro - Barbearia</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 id="authTitle" class="text-2xl font-bold mb-6 text-center">Login</h2>
+        <div id="loginForm">
+            <button id="googleLogin" class="w-full bg-red-500 text-white py-2 px-4 rounded mb-4">Login com Google</button>
+            <div class="text-center mb-4">ou</div>
+            <form id="emailLoginForm">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium">E-mail:</label>
+                    <input type="email" id="email" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium">Senha:</label>
+                    <input type="password" id="password" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded">Entrar</button>
+            </form>
+            <p class="text-center mt-4">Não tem conta? <a href="#" id="switchToRegister" class="text-blue-600">Cadastre-se</a></p>
+        </div>
+        <div id="registerForm" class="hidden">
+            <button id="googleRegister" class="w-full bg-red-500 text-white py-2 px-4 rounded mb-4">Cadastrar com Google</button>
+            <div class="text-center mb-4">ou</div>
+            <form id="emailRegisterForm">
+                <div class="mb-4">
+                    <label for="regEmail" class="block text-sm font-medium">E-mail:</label>
+                    <input type="email" id="regEmail" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label for="regPhone" class="block text-sm font-medium">Telefone:</label>
+                    <input type="tel" id="regPhone" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label for="regPassword" class="block text-sm font-medium">Senha:</label>
+                    <input type="password" id="regPassword" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded">Cadastrar</button>
+            </form>
+            <p class="text-center mt-4">Já tem conta? <a href="#" id="switchToLogin" class="text-blue-600">Faça login</a></p>
+        </div>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>
