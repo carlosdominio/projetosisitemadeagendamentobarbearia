@@ -100,23 +100,56 @@ function handleGoogleLogin(response) {
     // Decodificar o JWT do Google
     const userInfo = parseJwt(response.credential);
 
-    // Criar usuário com dados do Google
-    const user = {
-        id: userInfo.sub,
+    // Verificar se usuário já está cadastrado
+    const existingUser = registeredUsers.find(u => u.provider === 'google' && u.email === userInfo.email);
+
+    if (!existingUser) {
+        alert('Usuário Google não encontrado. Primeiro faça o cadastro com Google.');
+        return;
+    }
+
+    // Login bem-sucedido
+    const loginUser = {
+        id: existingUser.id,
+        name: existingUser.name,
+        email: existingUser.email,
+        picture: existingUser.picture,
+        provider: 'google'
+    };
+
+    localStorage.setItem('user', JSON.stringify(loginUser));
+    alert('Login com Google realizado com sucesso!');
+    window.location.href = 'index.html';
+}
+
+function handleGoogleRegister(response) {
+    // Decodificar o JWT do Google
+    const userInfo = parseJwt(response.credential);
+
+    // Verificar se já existe cadastro com este email
+    const existingUser = registeredUsers.find(u => u.email === userInfo.email);
+
+    if (existingUser) {
+        alert('Este email já está cadastrado. Use o login normal ou Google.');
+        return;
+    }
+
+    // Cadastrar novo usuário Google
+    const newGoogleUser = {
+        id: 'google_' + userInfo.sub,
         name: userInfo.name,
         email: userInfo.email,
         picture: userInfo.picture,
         provider: 'google'
     };
 
-    localStorage.setItem('user', JSON.stringify(user));
-    alert('Login com Google realizado com sucesso!');
-    window.location.href = 'index.html';
-}
+    registeredUsers.push(newGoogleUser);
+    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
 
-function handleGoogleRegister(response) {
-    // Mesmo processo para cadastro
-    handleGoogleLogin(response);
+    // Fazer login automático
+    localStorage.setItem('user', JSON.stringify(newGoogleUser));
+    alert('Cadastro com Google realizado com sucesso!');
+    window.location.href = 'index.html';
 }
 
 function parseJwt(token) {
@@ -131,54 +164,30 @@ function parseJwt(token) {
 
 // Inicializar Google Sign-In
 window.onload = function() {
-    // Configurar botões do Google (simulado - em produção precisaria de client_id)
-    document.getElementById('googleLogin').addEventListener('click', () => {
-        alert('Para usar Google Login em produção, configure um Client ID do Google Cloud Console');
-        // Simulação - verificar se usuário "Google" existe
-        const googleUser = registeredUsers.find(u => u.provider === 'google' && u.email === 'google@example.com');
-
-        if (!googleUser) {
-            alert('Usuário Google não encontrado. Primeiro faça o cadastro com Google.');
-            return;
-        }
-
-        // Login bem-sucedido
-        const loginUser = {
-            id: googleUser.id,
-            name: googleUser.name,
-            email: googleUser.email,
-            provider: googleUser.provider
-        };
-
-        localStorage.setItem('user', JSON.stringify(loginUser));
-        alert('Login com Google realizado com sucesso!');
-        window.location.href = 'index.html';
+    // Configurar Google Identity Services
+    google.accounts.id.initialize({
+        client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
+        callback: handleGoogleLogin
     });
 
-    document.getElementById('googleRegister').addEventListener('click', () => {
-        alert('Para usar Google Login em produção, configure um Client ID do Google Cloud Console');
-        // Simulação - verificar se já existe
-        const existingGoogleUser = registeredUsers.find(u => u.provider === 'google' && u.email === 'google@example.com');
-
-        if (existingGoogleUser) {
-            alert('Usuário Google já cadastrado. Faça o login.');
-            return;
+    // Renderizar botões do Google
+    google.accounts.id.renderButton(
+        document.getElementById('googleLogin'),
+        {
+            theme: 'outline',
+            size: 'large',
+            text: 'signin_with',
+            shape: 'rectangular'
         }
+    );
 
-        // Cadastrar novo usuário Google
-        const newGoogleUser = {
-            id: 'google_' + Date.now(),
-            name: 'Usuário Google',
-            email: 'google@example.com',
-            provider: 'google'
-        };
-
-        registeredUsers.push(newGoogleUser);
-        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-
-        // Fazer login automático
-        localStorage.setItem('user', JSON.stringify(newGoogleUser));
-        alert('Cadastro com Google realizado com sucesso!');
-        window.location.href = 'index.html';
-    });
+    google.accounts.id.renderButton(
+        document.getElementById('googleRegister'),
+        {
+            theme: 'outline',
+            size: 'large',
+            text: 'signup_with',
+            shape: 'rectangular'
+        }
+    );
 };
