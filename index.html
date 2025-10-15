@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Agendamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Barbearia Agendamento</h1>
+            <nav>
+                <button id="loginBtn" class="bg-white text-blue-600 px-4 py-2 rounded">Login</button>
+                <button id="registerBtn" class="bg-white text-blue-600 px-4 py-2 rounded ml-2">Cadastrar</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4">
+        <section id="home" class="text-center py-10">
+            <h2 class="text-3xl font-bold mb-4">Bem-vindo à Barbearia</h2>
+            <p class="text-lg mb-6">Agende seu corte de cabelo de forma fácil e rápida.</p>
+            <button id="scheduleBtn" class="bg-blue-600 text-white px-6 py-3 rounded">Agendar Agora</button>
+        </section>
+
+        <section id="schedule" class="hidden">
+            <h3 class="text-2xl font-bold mb-4">Agendar Corte</h3>
+            <form id="scheduleForm">
+                <div class="mb-4">
+                    <label for="date" class="block text-sm font-medium">Data:</label>
+                    <input type="date" id="date" class="mt-1 block w-full border-gray-300 rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label for="time" class="block text-sm font-medium">Hora:</label>
+                    <select id="time" class="mt-1 block w-full border-gray-300 rounded-md">
+                        <option>09:00</option>
+                        <option>10:00</option>
+                        <option>11:00</option>
+                        <!-- Adicionar mais horários -->
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="service" class="block text-sm font-medium">Serviço:</label>
+                    <select id="service" class="mt-1 block w-full border-gray-300 rounded-md">
+                        <option value="corte_basico">Corte Básico - R$ 20</option>
+                        <option value="corte_completo">Corte Completo - R$ 30</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Agendar</button>
+            </form>
+        </section>
+
+        <section id="admin" class="hidden">
+            <h3 class="text-2xl font-bold mb-4">Painel Administrativo</h3>
+            <!-- Conteúdo do painel admin -->
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2023 Barbearia Agendamento</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
