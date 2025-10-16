@@ -51,7 +51,7 @@ function setupInterface() {
         }
 
         // Simular agendamento
-        alert('Agendamento realizado com sucesso! Redirecionando para pagamento...');
+        alert('Agendamento realizado com sucesso! Você receberá uma confirmação por WhatsApp. Redirecionando para pagamento...');
 
         // Salvar agendamento na "base de dados" administrativa
         const user = JSON.parse(localStorage.getItem('user'));
@@ -72,6 +72,15 @@ function setupInterface() {
 
         // Salvar agendamento temporariamente para pagamento
         localStorage.setItem('currentAppointment', JSON.stringify(appointment));
+
+        // Enviar notificação WhatsApp
+        if (user.phone) {
+            sendAppointmentConfirmation(user.phone, {
+                date: date,
+                time: time,
+                service: service === 'corte_basico' ? 'Corte Básico' : 'Corte Completo'
+            });
+        }
 
         // Redirecionar para pagamento
         window.location.href = 'payment.html';

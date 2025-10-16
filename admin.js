@@ -109,7 +109,19 @@ function confirmAppointment(index) {
 
         localStorage.setItem('adminAppointments', JSON.stringify(adminAppointments));
         loadAdminData(); // Recarregar dados
-        alert('Agendamento confirmado com sucesso!');
+
+        // Enviar notificação WhatsApp de confirmação
+        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const client = registeredUsers.find(u => u.name === appointment.client);
+        if (client && client.phone) {
+            sendAppointmentConfirmation(client.phone, {
+                date: appointment.date,
+                time: appointment.time,
+                service: appointment.service === 'corte_basico' ? 'Corte Básico' : 'Corte Completo'
+            });
+        }
+
+        alert('Agendamento confirmado com sucesso! Cliente notificado via WhatsApp.');
     }
 }
 
