@@ -13,13 +13,13 @@ function loadAdminData() {
     const adminPayments = JSON.parse(localStorage.getItem('adminPayments') || '[]');
 
     // Calcular estatísticas
-    const today = new Date().toISOString().split('T')[0];
+    const currentDate = new Date().toISOString().split('T')[0];
     const thisMonth = new Date().getMonth();
     const thisYear = new Date().getFullYear();
 
-    const agendamentosHoje = adminAppointments.filter(a => a.date === today).length;
+    const agendamentosHoje = adminAppointments.filter(a => a.date === currentDate).length;
     const lucroHoje = adminPayments
-        .filter(p => p.date === today)
+        .filter(p => p.date === currentDate)
         .reduce((total, p) => total + parseFloat(p.value.replace('R$ ', '')), 0);
 
     const lucroMes = adminPayments
@@ -55,11 +55,11 @@ function loadAdminData() {
     });
 
     // Filtrar apenas agendamentos de hoje por padrão
-    const today = new Date().toISOString().split('T')[0];
-    const agendamentosHoje = adminAppointments.filter(a => a.date === today);
+    const currentDate = new Date().toISOString().split('T')[0];
+    const agendamentosHoje = adminAppointments.filter(a => a.date === currentDate);
 
     // Mostrar agendamentos de hoje
-    showAgendamentosByDate(today, agendamentosHoje);
+    showAgendamentosByDate(currentDate, agendamentosHoje);
 
     // Criar abas por data (todas as datas disponíveis)
     const agendamentosPorData = {};
