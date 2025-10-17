@@ -150,7 +150,9 @@ function createDateTabs(agendamentosPorData, todayDate) {
 
     datas.forEach((data, index) => {
         const tabButton = document.createElement('button');
-        tabButton.className = `px-4 py-2 rounded whitespace-nowrap ${index === 0 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`;
+        // Destaque a aba "Hoje" sempre que for hoje
+        const isToday = data === todayDate;
+        tabButton.className = `px-4 py-2 rounded whitespace-nowrap ${isToday ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`;
         tabButton.textContent = formatDate(data);
         tabButton.onclick = () => {
             // Remover classe ativa de todas as abas
