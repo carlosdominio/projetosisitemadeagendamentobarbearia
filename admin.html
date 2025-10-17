@@ -54,20 +54,30 @@
 
         <div class="bg-white p-4 rounded shadow mb-4">
             <h3 class="text-xl font-bold mb-4">Agendamentos</h3>
-            <table class="w-full">
-                <thead>
-                    <tr class="border-b">
-                        <th class="text-left">Cliente</th>
-                        <th class="text-left">Data/Hora</th>
-                        <th class="text-left">Serviço</th>
-                        <th class="text-left">Status</th>
-                        <th class="text-left">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="agendamentosTable">
-                    <!-- Dados dos agendamentos serão inseridos aqui -->
-                </tbody>
-            </table>
+
+            <!-- Filtros -->
+            <div class="mb-4 flex space-x-4">
+                <select id="statusFilter" class="border rounded px-3 py-2">
+                    <option value="todos">Todos os Status</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Confirmado">Confirmado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+                <input type="date" id="dateFilter" class="border rounded px-3 py-2">
+                <button id="clearFilters" class="bg-gray-500 text-white px-4 py-2 rounded">Limpar Filtros</button>
+            </div>
+
+            <!-- Abas por data -->
+            <div class="mb-4">
+                <div class="flex space-x-2 overflow-x-auto" id="dateTabs">
+                    <!-- Abas serão geradas dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Tabela de agendamentos -->
+            <div id="agendamentosContainer">
+                <!-- Conteúdo será gerado dinamicamente -->
+            </div>
         </div>
 
         <div class="bg-white p-4 rounded shadow">
