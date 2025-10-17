@@ -55,11 +55,11 @@ function loadAdminData() {
     });
 
     // Filtrar apenas agendamentos de hoje por padrão
-    const currentDate = new Date().toISOString().split('T')[0];
-    const agendamentosHoje = adminAppointments.filter(a => a.date === currentDate);
+    const todayDate = new Date().toISOString().split('T')[0];
+    const agendamentosHoje = adminAppointments.filter(a => a.date === todayDate);
 
     // Mostrar agendamentos de hoje
-    showAgendamentosByDate(currentDate, agendamentosHoje);
+    showAgendamentosByDate(todayDate, agendamentosHoje);
 
     // Criar abas por data (todas as datas disponíveis)
     const agendamentosPorData = {};
