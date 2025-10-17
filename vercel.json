@@ -1,18 +1,8 @@
 {
   "version": 2,
   "functions": {
-    "server.js": {
+    "api/whatsapp.js": {
       "maxDuration": 10
     }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  }
 }
