@@ -71,8 +71,8 @@ function loadAdminData() {
         agendamentosPorData[data].push(agendamento);
     });
 
-    // Criar abas por data
-    createDateTabs(agendamentosPorData);
+    // Criar abas por data (ordenadas com hoje primeiro)
+    createDateTabs(agendamentosPorData, todayDate);
 
     // Configurar filtros
     setupFilters(adminAppointments, agendamentosPorData);
@@ -137,11 +137,16 @@ function cancelAppointment(index) {
 }
 
 // Funções para organizar agendamentos por data
-function createDateTabs(agendamentosPorData) {
+function createDateTabs(agendamentosPorData, todayDate) {
     const dateTabs = document.getElementById('dateTabs');
     dateTabs.innerHTML = '';
 
-    const datas = Object.keys(agendamentosPorData).sort();
+    // Ordenar datas com hoje primeiro
+    const datas = Object.keys(agendamentosPorData).sort((a, b) => {
+        if (a === todayDate) return -1;
+        if (b === todayDate) return 1;
+        return a.localeCompare(b);
+    });
 
     datas.forEach((data, index) => {
         const tabButton = document.createElement('button');
