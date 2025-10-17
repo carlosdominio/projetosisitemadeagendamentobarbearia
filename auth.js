@@ -164,30 +164,63 @@ function parseJwt(token) {
 
 // Inicializar Google Sign-In
 window.onload = function() {
-    // Configurar Google Identity Services
-    google.accounts.id.initialize({
-        client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
-        callback: handleGoogleLogin
-    });
+    // Verificar se estamos em produção (Vercel) ou desenvolvimento
+    const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
-    // Renderizar botões do Google
-    google.accounts.id.renderButton(
-        document.getElementById('googleLogin'),
-        {
-            theme: 'outline',
-            size: 'large',
-            text: 'signin_with',
-            shape: 'rectangular'
-        }
-    );
+    if (isProduction) {
+        // Configuração para produção com popup
+        google.accounts.id.initialize({
+            client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
+            callback: handleGoogleLogin,
+            ux_mode: 'popup'
+        });
 
-    google.accounts.id.renderButton(
-        document.getElementById('googleRegister'),
-        {
-            theme: 'outline',
-            size: 'large',
-            text: 'signup_with',
-            shape: 'rectangular'
-        }
-    );
+        // Renderizar botões do Google
+        google.accounts.id.renderButton(
+            document.getElementById('googleLogin'),
+            {
+                theme: 'outline',
+                size: 'large',
+                text: 'signin_with',
+                shape: 'rectangular'
+            }
+        );
+
+        google.accounts.id.renderButton(
+            document.getElementById('googleRegister'),
+            {
+                theme: 'outline',
+                size: 'large',
+                text: 'signup_with',
+                shape: 'rectangular'
+            }
+        );
+    } else {
+        // Configuração para desenvolvimento
+        google.accounts.id.initialize({
+            client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
+            callback: handleGoogleLogin
+        });
+
+        // Renderizar botões do Google
+        google.accounts.id.renderButton(
+            document.getElementById('googleLogin'),
+            {
+                theme: 'outline',
+                size: 'large',
+                text: 'signin_with',
+                shape: 'rectangular'
+            }
+        );
+
+        google.accounts.id.renderButton(
+            document.getElementById('googleRegister'),
+            {
+                theme: 'outline',
+                size: 'large',
+                text: 'signup_with',
+                shape: 'rectangular'
+            }
+        );
+    }
 };
