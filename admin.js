@@ -54,7 +54,14 @@ function loadAdminData() {
         row.insertCell(3).textContent = cortesMes;
     });
 
-    // Agrupar agendamentos por data
+    // Filtrar apenas agendamentos de hoje por padrão
+    const today = new Date().toISOString().split('T')[0];
+    const agendamentosHoje = adminAppointments.filter(a => a.date === today);
+
+    // Mostrar agendamentos de hoje
+    showAgendamentosByDate(today, agendamentosHoje);
+
+    // Criar abas por data (todas as datas disponíveis)
     const agendamentosPorData = {};
     adminAppointments.forEach(agendamento => {
         const data = agendamento.date;
@@ -66,12 +73,6 @@ function loadAdminData() {
 
     // Criar abas por data
     createDateTabs(agendamentosPorData);
-
-    // Mostrar agendamentos da primeira data por padrão
-    const datas = Object.keys(agendamentosPorData).sort();
-    if (datas.length > 0) {
-        showAgendamentosByDate(datas[0], agendamentosPorData[datas[0]]);
-    }
 
     // Configurar filtros
     setupFilters(adminAppointments, agendamentosPorData);
