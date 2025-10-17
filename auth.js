@@ -148,12 +148,42 @@ function handleGoogleRegister(response) {
             return;
         }
 
+        // Mostrar modal para coletar telefone
+        showGooglePhoneModal(userInfo);
+    } catch (error) {
+        console.error('Erro no cadastro Google:', error);
+        alert('Erro no cadastro com Google. Tente novamente.');
+    }
+}
+
+function showGooglePhoneModal(userInfo) {
+    const modal = document.getElementById('googlePhoneModal');
+    modal.classList.remove('hidden');
+
+    // Armazenar dados do Google temporariamente
+    localStorage.setItem('tempGoogleUser', JSON.stringify(userInfo));
+
+    // Configurar eventos do modal
+    document.getElementById('skipPhone').onclick = () => {
+        completeGoogleRegistration(userInfo, null);
+    };
+
+    document.getElementById('googlePhoneForm').onsubmit = (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('googlePhone').value;
+        completeGoogleRegistration(userInfo, phone);
+    };
+}
+
+function completeGoogleRegistration(userInfo, phone) {
+    try {
         // Cadastrar novo usuário Google
         const newGoogleUser = {
             id: 'google_' + userInfo.sub,
             name: userInfo.name,
             email: userInfo.email,
             picture: userInfo.picture,
+            phone: phone,
             provider: 'google'
         };
 
@@ -162,13 +192,19 @@ function handleGoogleRegister(response) {
         registeredUsers.push(newGoogleUser);
         localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
 
+        // Limpar dados temporários
+        localStorage.removeItem('tempGoogleUser');
+
+        // Fechar modal
+        document.getElementById('googlePhoneModal').classList.add('hidden');
+
         // Fazer login automático
         localStorage.setItem('user', JSON.stringify(newGoogleUser));
         alert('Cadastro com Google realizado com sucesso!');
         window.location.href = 'index.html';
     } catch (error) {
-        console.error('Erro no cadastro Google:', error);
-        alert('Erro no cadastro com Google. Tente novamente.');
+        console.error('Erro ao completar cadastro Google:', error);
+        alert('Erro ao completar cadastro. Tente novamente.');
     }
 }
 
