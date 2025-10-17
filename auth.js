@@ -97,59 +97,79 @@ document.getElementById('emailRegisterForm').addEventListener('submit', (e) => {
 
 // Google Auth
 function handleGoogleLogin(response) {
-    // Decodificar o JWT do Google
-    const userInfo = parseJwt(response.credential);
+    try {
+        console.log('Google login response:', response);
 
-    // Verificar se usuário já está cadastrado
-    const existingUser = registeredUsers.find(u => u.provider === 'google' && u.email === userInfo.email);
+        // Decodificar o JWT do Google
+        const userInfo = parseJwt(response.credential);
+        console.log('Decoded user info:', userInfo);
 
-    if (!existingUser) {
-        alert('Usuário Google não encontrado. Primeiro faça o cadastro com Google.');
-        return;
+        // Verificar se usuário já está cadastrado
+        const existingUser = registeredUsers.find(u => u.provider === 'google' && u.email === userInfo.email);
+        console.log('Existing user found:', existingUser);
+
+        if (!existingUser) {
+            alert('Usuário Google não encontrado. Primeiro faça o cadastro com Google.');
+            return;
+        }
+
+        // Login bem-sucedido
+        const loginUser = {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+            picture: existingUser.picture,
+            provider: 'google'
+        };
+
+        localStorage.setItem('user', JSON.stringify(loginUser));
+        alert('Login com Google realizado com sucesso!');
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Erro no login Google:', error);
+        alert('Erro no login com Google. Tente novamente.');
     }
-
-    // Login bem-sucedido
-    const loginUser = {
-        id: existingUser.id,
-        name: existingUser.name,
-        email: existingUser.email,
-        picture: existingUser.picture,
-        provider: 'google'
-    };
-
-    localStorage.setItem('user', JSON.stringify(loginUser));
-    alert('Login com Google realizado com sucesso!');
-    window.location.href = 'index.html';
 }
 
 function handleGoogleRegister(response) {
-    // Decodificar o JWT do Google
-    const userInfo = parseJwt(response.credential);
+    try {
+        console.log('Google register response:', response);
 
-    // Verificar se já existe cadastro com este email
-    const existingUser = registeredUsers.find(u => u.email === userInfo.email);
+        // Decodificar o JWT do Google
+        const userInfo = parseJwt(response.credential);
+        console.log('Decoded user info:', userInfo);
 
-    if (existingUser) {
-        alert('Este email já está cadastrado. Use o login normal ou Google.');
-        return;
+        // Verificar se já existe cadastro com este email
+        const existingUser = registeredUsers.find(u => u.email === userInfo.email);
+        console.log('Existing user check:', existingUser);
+
+        if (existingUser) {
+            alert('Este email já está cadastrado. Use o login normal ou Google.');
+            return;
+        }
+
+        // Cadastrar novo usuário Google
+        const newGoogleUser = {
+            id: 'google_' + userInfo.sub,
+            name: userInfo.name,
+            email: userInfo.email,
+            picture: userInfo.picture,
+            provider: 'google'
+        };
+
+        console.log('New Google user to register:', newGoogleUser);
+
+        registeredUsers.push(newGoogleUser);
+        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
+        // Fazer login automático
+        localStorage.setItem('user', JSON.stringify(newGoogleUser));
+        alert('Cadastro com Google realizado com sucesso!');
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Erro no cadastro Google:', error);
+        alert('Erro no cadastro com Google. Tente novamente.');
     }
-
-    // Cadastrar novo usuário Google
-    const newGoogleUser = {
-        id: 'google_' + userInfo.sub,
-        name: userInfo.name,
-        email: userInfo.email,
-        picture: userInfo.picture,
-        provider: 'google'
-    };
-
-    registeredUsers.push(newGoogleUser);
-    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-
-    // Fazer login automático
-    localStorage.setItem('user', JSON.stringify(newGoogleUser));
-    alert('Cadastro com Google realizado com sucesso!');
-    window.location.href = 'index.html';
 }
 
 function parseJwt(token) {
@@ -164,63 +184,67 @@ function parseJwt(token) {
 
 // Inicializar Google Sign-In
 window.onload = function() {
+    console.log('Initializing Google Sign-In...');
+
     // Verificar se estamos em produção (Vercel) ou desenvolvimento
     const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    console.log('Is production:', isProduction, 'Hostname:', window.location.hostname);
 
-    if (isProduction) {
-        // Configuração para produção com popup
-        google.accounts.id.initialize({
-            client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
-            callback: handleGoogleLogin,
-            ux_mode: 'popup'
-        });
+    // Configuração unificada
+    const config = {
+        client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
+        callback: handleCredentialResponse,
+        ux_mode: isProduction ? 'popup' : 'redirect',
+        context: 'signin'
+    };
 
-        // Renderizar botões do Google
-        google.accounts.id.renderButton(
-            document.getElementById('googleLogin'),
-            {
-                theme: 'outline',
-                size: 'large',
-                text: 'signin_with',
-                shape: 'rectangular'
-            }
-        );
+    console.log('Google config:', config);
 
-        google.accounts.id.renderButton(
-            document.getElementById('googleRegister'),
-            {
-                theme: 'outline',
-                size: 'large',
-                text: 'signup_with',
-                shape: 'rectangular'
-            }
-        );
-    } else {
-        // Configuração para desenvolvimento
-        google.accounts.id.initialize({
-            client_id: '155717388662-uf2el2e3atqd0ge45fs4vo41jhhpd5uj.apps.googleusercontent.com',
-            callback: handleGoogleLogin
-        });
+    google.accounts.id.initialize(config);
 
-        // Renderizar botões do Google
-        google.accounts.id.renderButton(
-            document.getElementById('googleLogin'),
-            {
-                theme: 'outline',
-                size: 'large',
-                text: 'signin_with',
-                shape: 'rectangular'
-            }
-        );
+    // Renderizar botões do Google
+    google.accounts.id.renderButton(
+        document.getElementById('googleLogin'),
+        {
+            theme: 'outline',
+            size: 'large',
+            text: 'signin_with',
+            shape: 'rectangular'
+        }
+    );
 
-        google.accounts.id.renderButton(
-            document.getElementById('googleRegister'),
-            {
-                theme: 'outline',
-                size: 'large',
-                text: 'signup_with',
-                shape: 'rectangular'
-            }
-        );
-    }
+    google.accounts.id.renderButton(
+        document.getElementById('googleRegister'),
+        {
+            theme: 'outline',
+            size: 'large',
+            text: 'signup_with',
+            shape: 'rectangular'
+        }
+    );
+
+    console.log('Google Sign-In initialized successfully');
 };
+
+// Função unificada para tratar resposta do Google
+function handleCredentialResponse(response) {
+    console.log('Credential response received:', response);
+
+    try {
+        const userInfo = parseJwt(response.credential);
+        console.log('Parsed user info:', userInfo);
+
+        // Verificar qual botão foi clicado (login ou register)
+        const isRegisterMode = document.getElementById('registerForm').classList.contains('hidden') === false;
+        console.log('Is register mode:', isRegisterMode);
+
+        if (isRegisterMode) {
+            handleGoogleRegister({ credential: response.credential });
+        } else {
+            handleGoogleLogin({ credential: response.credential });
+        }
+    } catch (error) {
+        console.error('Error in credential response:', error);
+        alert('Erro ao processar resposta do Google. Tente novamente.');
+    }
+}
