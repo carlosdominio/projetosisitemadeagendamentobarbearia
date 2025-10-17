@@ -17,7 +17,7 @@ function loadAdminData() {
     const thisMonth = new Date().getMonth();
     const thisYear = new Date().getFullYear();
 
-    const agendamentosHoje = adminAppointments.filter(a => a.date === currentDate).length;
+    const totalAgendamentosHoje = adminAppointments.filter(a => a.date === currentDate).length;
     const lucroHoje = adminPayments
         .filter(p => p.date === currentDate)
         .reduce((total, p) => total + parseFloat(p.value.replace('R$ ', '')), 0);
@@ -31,7 +31,7 @@ function loadAdminData() {
 
     // Preencher estatísticas
     document.getElementById('totalClientes').textContent = registeredUsers.length;
-    document.getElementById('agendamentosHoje').textContent = agendamentosHoje;
+    document.getElementById('agendamentosHoje').textContent = totalAgendamentosHoje;
     document.getElementById('lucroHoje').textContent = `R$ ${lucroHoje.toFixed(2)}`;
     document.getElementById('lucroMes').textContent = `R$ ${lucroMes.toFixed(2)}`;
 
