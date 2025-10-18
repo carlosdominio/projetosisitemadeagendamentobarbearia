@@ -17,7 +17,7 @@ function loadAdminData() {
     const thisMonth = new Date().getMonth();
     const thisYear = new Date().getFullYear();
 
-    const totalAgendamentosHoje = adminAppointments.filter(a => a.date === currentDate).length;
+    const totalAgendamentosHoje = adminAppointments.filter(a => a.date === currentDate && a.status !== 'Cancelado').length;
     const lucroHoje = adminPayments
         .filter(p => p.date === currentDate)
         .reduce((total, p) => total + parseFloat(p.value.replace('R$ ', '')), 0);
