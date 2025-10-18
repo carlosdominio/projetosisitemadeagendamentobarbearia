@@ -297,9 +297,12 @@ function showAgendamentosHoje(agendamentos) {
     // Criar cards para agendamentos de hoje
     let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
 
-    agendamentos.forEach((agendamento, index) => {
+    agendamentos.forEach((agendamento) => {
         const statusClass = agendamento.status === 'Confirmado' ? 'bg-green-500' :
                            agendamento.status === 'Cancelado' ? 'bg-red-500' : 'bg-yellow-500';
+
+        // Obter o índice correto do agendamento
+        const appointmentIndex = getAppointmentIndex(agendamento);
 
         html += `
             <div class="bg-white bg-opacity-20 rounded-lg p-4 border border-white border-opacity-20">
@@ -322,10 +325,10 @@ function showAgendamentosHoje(agendamentos) {
                 </div>
                 ${agendamento.status === 'Pendente' ? `
                     <div class="flex space-x-2">
-                        <button onclick="confirmAppointment(${getAppointmentIndex(agendamento)})" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded text-sm font-medium transition-colors">
+                        <button onclick="confirmAppointment(${appointmentIndex})" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded text-sm font-medium transition-colors">
                             ✅ Confirmar
                         </button>
-                        <button onclick="cancelAppointment(${getAppointmentIndex(agendamento)})" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm font-medium transition-colors">
+                        <button onclick="cancelAppointment(${appointmentIndex})" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm font-medium transition-colors">
                             ❌ Cancelar
                         </button>
                     </div>
