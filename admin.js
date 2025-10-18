@@ -58,27 +58,8 @@ function loadAdminData() {
     const todayDate = new Date().toISOString().split('T')[0];
     const agendamentosHoje = adminAppointments.filter(a => a.date === todayDate);
 
-    // Mostrar agendamentos de hoje em destaque
+    // Mostrar apenas agendamentos de hoje em destaque
     showAgendamentosHoje(agendamentosHoje);
-
-    // Mostrar todos os agendamentos na seção inferior
-    showAgendamentosByDate(todayDate, agendamentosHoje);
-
-    // Criar abas por data (todas as datas disponíveis)
-    const agendamentosPorData = {};
-    adminAppointments.forEach(agendamento => {
-        const data = agendamento.date;
-        if (!agendamentosPorData[data]) {
-            agendamentosPorData[data] = [];
-        }
-        agendamentosPorData[data].push(agendamento);
-    });
-
-    // Criar abas por data (ordenadas com hoje primeiro)
-    createDateTabs(agendamentosPorData, todayDate);
-
-    // Configurar filtros
-    setupFilters(adminAppointments, agendamentosPorData);
 
     // Limpar e preencher tabela de pagamentos
     const pagamentosTable = document.getElementById('pagamentosTable');
