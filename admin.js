@@ -298,6 +298,11 @@ function showAgendamentosHoje(agendamentos) {
     let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
 
     agendamentos.forEach((agendamento) => {
+        // Pular agendamentos cancelados (não mostrar)
+        if (agendamento.status === 'Cancelado') {
+            return;
+        }
+
         const statusClass = agendamento.status === 'Confirmado' ? 'bg-green-500' :
                            agendamento.status === 'Cancelado' ? 'bg-red-500' : 'bg-yellow-500';
 
@@ -334,7 +339,7 @@ function showAgendamentosHoje(agendamentos) {
                     </div>
                 ` : `
                     <div class="text-center">
-                        <span class="text-white text-sm opacity-75">Agendamento finalizado</span>
+                        <span class="text-white text-sm opacity-75">✅ Agendamento confirmado</span>
                     </div>
                 `}
             </div>
