@@ -58,7 +58,10 @@ function loadAdminData() {
     const todayDate = new Date().toISOString().split('T')[0];
     const agendamentosHoje = adminAppointments.filter(a => a.date === todayDate);
 
-    // Mostrar agendamentos de hoje
+    // Mostrar agendamentos de hoje em destaque
+    showAgendamentosHoje(agendamentosHoje);
+
+    // Mostrar todos os agendamentos na seção inferior
     showAgendamentosByDate(todayDate, agendamentosHoje);
 
     // Criar abas por data (todas as datas disponíveis)
@@ -290,6 +293,72 @@ function setupFilters(allAppointments, agendamentosPorData) {
             showAgendamentosByDate(datas[0], agendamentosPorData[datas[0]]);
         }
     });
+}
+
+function showAgendamentosHoje(agendamentos) {
+    const container = document.getElementById('agendamentosHojeContainer');
+    const totalElement = document.getElementById('totalAgendamentosHoje');
+
+    // Atualizar contador
+    totalElement.textContent = agendamentos.length;
+
+    if (agendamentos.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8">
+                <div class="text-6xl mb-2">⏰</div>
+                <p class="text-lg text-white">Nenhum agendamento para hoje</p>
+                <p class="text-sm text-white opacity-75">Os agendamentos aparecerão aqui automaticamente</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Criar cards para agendamentos de hoje
+    let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+
+    agendamentos.forEach((agendamento, index) => {
+        const statusClass = agendamento.status === 'Confirmado' ? 'bg-green-500' :
+                           agendamento.status === 'Cancelado' ? 'bg-red-500' : 'bg-yellow-500';
+
+        html += `
+            <div class="bg-white bg-opacity-20 rounded-lg p-4 border border-white border-opacity-20">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h4 class="font-bold text-white">${agendamento.client}</h4>
+                        <p class="text-white text-sm opacity-90">${agendamento.time}</p>
+                    </div>
+                    <span class="px-2 py-1 rounded text-xs font-bold text-white ${statusClass}">
+                        ${agendamento.status}
+                    </span>
+                </div>
+                <div class="mb-3">
+                    <p class="text-white text-sm">
+                        <span class="font-medium">Serviço:</span> ${agendamento.service === 'corte_basico' ? 'Corte Básico' : 'Corte Completo'}
+                    </p>
+                    <p class="text-white text-sm">
+                        <span class="font-medium">Valor:</span> R$ ${agendamento.value || (agendamento.service === 'corte_basico' ? '20' : '30')}
+                    </p>
+                </div>
+                ${agendamento.status === 'Pendente' ? `
+                    <div class="flex space-x-2">
+                        <button onclick="confirmAppointment(${getAppointmentIndex(agendamento)})" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded text-sm font-medium transition-colors">
+                            ✅ Confirmar
+                        </button>
+                        <button onclick="cancelAppointment(${getAppointmentIndex(agendamento)})" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm font-medium transition-colors">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                ` : `
+                    <div class="text-center">
+                        <span class="text-white text-sm opacity-75">Agendamento finalizado</span>
+                    </div>
+                `}
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
 }
 
 function formatDate(dateString) {
