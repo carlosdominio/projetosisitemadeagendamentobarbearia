@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadAdminData() {
+    // Limpar dados antigos (apenas para desenvolvimento)
+    localStorage.removeItem('adminAppointments');
+    localStorage.removeItem('adminPayments');
+
     // Carregar dados reais do localStorage
     const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
     const adminAppointments = JSON.parse(localStorage.getItem('adminAppointments') || '[]');
